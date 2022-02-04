@@ -31,6 +31,10 @@ class DataClass:
         # TODO: HW1: change the continuous opposite columns:
         # 5 => 1, 4 => 2 , ...
         # save the result in the self.df
+        for val in self.continuous_opposite_questions:
+            6 - str(val)
+
+
 
         self.continuous_columns = [col for col in self.df.columns if '1 - ' in col]
 
@@ -78,7 +82,9 @@ class DataClass:
         # 3. encode the values with the mapping (string -> number)
         # TODO: HW2: get encoded data: i.e. you want to change the values to the number
         # using the mapping
-        encoded_data = ...
+        encoded_data = []
+        for val in selected_df:
+            encoded_data.append(mapping[val])
 
         # 4. We want to put the enocded values back into the df
         df['[encoded] ' + column_name] = encoded_data
@@ -92,7 +98,7 @@ class DataClass:
         # TODO: HW 3: for scaling the continuous values to be in 0~1
         # you can simply divide by 5.
         # store the scaled value in the original df
-        pass
+        df[columns] = df[columns] / 5
 
     ### FOR Q17
     def get_multiple_mapping(self, column_name, df):
