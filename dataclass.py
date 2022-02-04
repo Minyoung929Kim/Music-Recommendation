@@ -31,10 +31,12 @@ class DataClass:
         # TODO: HW1: change the continuous opposite columns:
         # 5 => 1, 4 => 2 , ...
         # save the result in the self.df
+        continuous_opposite_columns = []
         for val in self.continuous_opposite_questions:
-            6 - str(val)
-
-
+            for col in self.df.columns:
+                if col.startswith(str(val)):
+                    continuous_opposite_columns.append(col)
+        self.df[continuous_opposite_columns] = 6 - self.df[continuous_opposite_columns]
 
         self.continuous_columns = [col for col in self.df.columns if '1 - ' in col]
 
