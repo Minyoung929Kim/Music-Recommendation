@@ -38,21 +38,26 @@ class DataClass:
                     continuous_opposite_columns.append(col)
         self.df[continuous_opposite_columns] = 6 - self.df[continuous_opposite_columns]
 
-        self.continuous_columns = [col for col in self.df.columns if '1 - ' in col]
+        continuous_questions = [
+            3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 20, 22, 23, 24
+        ]
+        self.continuous_columns = []
+        for col in self.df.columns:
+            if col != 'Grade' and int(col[0]) in continuous_questions:
+                self.continuous_columns.append(col)
 
         self.categorical_columns = [
             'Grade',
+            '1) Where do you live during the semester? Please select all.',
             '2) Recently, how many hours did you sleep each day in a week, on average?',
             '8) How long have you been exercising a week?',
             '18) Do you have any ways to release stress? (e.g. meditation)',
             '19) Do you have someone you can talk to about personal thoughts?',
-            '20) Do you think you spent sufficient time with your family over the last few weeks? (Virtual meetings also)',
             '21) Recently, how often do you meet with other people for purposes aside from school?',
-            '22) Recently, how satisfied have you been with your lifestyle?',
-            '23) To what extent do you think that mental health care education should be considered seriously?',
-            '24) I am able to cope with sudden stress.'
         ]
-        self.special_column = '17) Which of the following is likely to cause you to feel stressed? (tick all that apply)'
+        self.special_columns = [
+            '17) Which of the following is likely to cause you to feel stressed? (tick all that apply)',
+        ]
 
     def get_mapping(self, column_name, df):
         # 1. select the column from df
@@ -106,8 +111,13 @@ class DataClass:
     def get_multiple_mapping(self, column_name, df):
         all_types = set()
         for data in df[column_name]:
-            data = data.split(',')
-            all_types.update(data)
+            data = data.split(',')  # 'a,b,c,d,e,f,g,h'  -> ['a', 'b', 'c']
+            # 'a, b, c, d' => ['a', ' b', ' c']
+            strip_data = []
+            for x in data:
+                strip_data.append(x.strip())
+
+            all_types.update(strip_data)
 
         mapping = {x: i for i, x in enumerate(all_types)}
         return mapping
@@ -117,7 +127,10 @@ class DataClass:
 
         for i, data in enumerate(df[column_name]):
             data = data.split(',')
+            strip_data = []
             for x in data:
+                strip_data.append(x.strip())
+            for x in strip_data:
                 encoded_data[i, mapping[x]] = 1
 
         return encoded_data
@@ -135,12 +148,35 @@ class DataClass:
         self.handle_continuous_columns(self.continuous_columns,
                                        self.df)  # scale between 0~1 dividing by 5
 
-        special_mapping = self.get_multiple_mapping(self.special_column, self.df)
-        encoded_columns[self.special_column] = self.encode_multiple(
-            self.special_column, self.df, special_mapping)
-        data_mappings[self.special_column] = special_mapping
+        for special_column in self.special_columns:
+            special_mapping = self.get_multiple_mapping(special_column, self.df)
+            print(special_mapping)
+            encoded_columns[special_column] = self.encode_multiple(
+                special_column, self.df, special_mapping)
+            data_mappings[special_column] = special_mapping
 
-        return encoded_columns, data_mappings, special_mapping
+        return encoded_columns, data_mappings
+
+    def process_test_data(self, df, data_mappings):
+        encoded_columns = {}
+
+        # categorical
+        for column in self.categorical_columns:
+            encoded_data = self.encoding_data(
+                column, df, data_mappings[column])  # the one hot encoded matrix
+            encoded_columns[column] = encoded_data
+
+        # continuous
+        self.handle_continuous_columns(self.continuous_columns,
+                                       df)  # scale between 0~1 dividing by 5
+
+        # special (i.e. multiple choice)
+        for special_column in self.special_columns:
+            encoded_columns[special_column] = self.encode_multiple(
+                special_column, df, data_mappings[column])
+            data_mappings[special_column] = data_mappings[column]
+
+        return encoded_columns
 
 
 # later...
