@@ -1,0 +1,68 @@
+{
+    "1) Where do you live during the semester? Please select all.": {
+        "Dorm": 0,
+        "Dorm, Homestay": 5,
+        "Home with family": 1,
+        "Home with family, (Uncle and aunt)": 4,
+        "Home with family, Dorm": 6,
+        "Homestay": 3,
+        "boarding": 2
+    },
+    "17) Which of the following is likely to cause you to feel stressed? (tick all that apply)": {
+        "Academy": 14,
+        "Exam Prep / Result": 1,
+        "Health": 11,
+        "Homesickness": 5,
+        "Homework": 0,
+        "Loads of assignments": 12,
+        "Physical appearance": 15,
+        "Relationship with family": 13,
+        "Relationship with friends": 10,
+        "Relationship with teachers": 2,
+        "Repeating schedules": 9,
+        "Sleeping late": 4,
+        "The talent I have": 6,
+        "Thoughts about my future": 8,
+        "it is useless": 7,
+        "lack of sleep": 3
+    },
+    "18) Do you have any ways to release stress? (e.g. meditation)": {
+        "No, I do not have one.": 2,
+        "Yes, but I have not been able to do so recently.": 0,
+        "Yes.": 1
+    },
+    "19) Do you have someone you can talk to about personal thoughts?": {
+        "No": 2,
+        "Not anymore": 0,
+        "Yes": 1
+    },
+    "2) Recently, how many hours did you sleep each day in a week, on average?": {
+        "3 hours or less": 4,
+        "9 hours or more": 2,
+        "More than 3 hours and less than 5 hours": 3,
+        "More than 5 hours and less than 7 hours": 0,
+        "More than 7 hours less than 9 hours": 1
+    },
+    "21) Recently, how often do you meet with other people for purposes aside from school?": {
+        "1-3 times a month": 1,
+        "More than once a week": 0,
+        "Rarely": 2
+    },
+    "8) How long have you been exercising a week?": {
+        "< 30 minutes": 1,
+        "Between 30 minutes and 1 hour": 3,
+        "I don't exercise": 2,
+        "More 3 hours and less than 6 hours": 4,
+        "More than 1 hour and less than 3 hours": 0,
+        "More than 6 hours": 5
+    },
+    "Grade": {
+        "GR06": 0,
+        "GR07": 1,
+        "GR08": 2,
+        "GR09": 3,
+        "GR10": 4,
+        "GR11": 5,
+        "GR12": 6
+    }
+}
