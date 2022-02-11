@@ -38,12 +38,12 @@ class DataClass:
                     continuous_opposite_columns.append(col)
         self.df[continuous_opposite_columns] = 6 - self.df[continuous_opposite_columns]
 
-        continuous_questions = [
+        self.continuous_questions = [
             3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 20, 22, 23, 24
         ]
         self.continuous_columns = []
         for col in self.df.columns:
-            if col != 'Grade' and int(col[0]) in continuous_questions:
+            if col != 'Grade' and int(col[0]) in self.continuous_questions:
                 self.continuous_columns.append(col)
 
         self.categorical_columns = [
@@ -134,6 +134,36 @@ class DataClass:
                 encoded_data[i, mapping[x]] = 1
 
         return encoded_data
+
+    def get_importance_score(self, filename):
+        """
+        read a pd.DataFrame from filename
+        extract importance scores
+        flip the scores, so that 1 is the lowest, and 5 is the highest
+        take an average over the scores
+        return the importance score for each question
+        """
+        df = pd.read_csv(filename)
+        df['a'] = 6 - df['a']
+        df['b'] = 6 - df['b']
+        df['c'] = 6 - df['c']
+
+        score_mean = (df['a'] + df['b'] + df['c']) / 3
+        return score_mean
+
+    def get_depression_score(self, importance_score):
+        scores = []
+        for row in self.df.iterrows():
+            answers = row[self.continuous_questions]
+            # -1, because we want to get the index of the questions
+            importance_scores = importance_score[[
+                i - 1 for i in self.continuous_questions
+            ]]
+
+            depression_score = answers @ importance_scores
+            scores.append(depression_score)
+
+        return np.array(scores)
 
     def process_data(self):
         data_mappings = {}
