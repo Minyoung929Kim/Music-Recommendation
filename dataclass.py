@@ -154,7 +154,8 @@ class DataClass:
     def get_depression_score(self, importance_score):
         scores = []
         for row in self.df.iterrows():
-            answers = row[self.continuous_questions]
+            # row  = (index number (int), row as a pd.Series)
+            answers = row[1].values[self.continuous_questions]
             # -1, because we want to get the index of the questions
             importance_scores = importance_score[[
                 i - 1 for i in self.continuous_questions
