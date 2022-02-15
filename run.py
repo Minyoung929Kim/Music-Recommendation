@@ -2,7 +2,7 @@ from dataclass import DataClass
 import numpy as np
 import json
 
-data_class = DataClass('Gathered data cleaned.csv')
+data_class = DataClass('Gathered data.csv')
 
 encoded_columns, data_mappings = data_class.process_data()
 
@@ -18,7 +18,7 @@ fout.close()
 
 # get importance scores
 
-importance_scores = data_class.get_importance_score('importance.csv')
+importance_scores = data_class.get_importance_score('survey_data/importance.csv')
 depression_scores = data_class.get_depression_score(importance_scores)  # [102,]
 
 # TODO: change the threshold
@@ -28,5 +28,5 @@ depression_scores = data_class.get_depression_score(importance_scores)  # [102,]
 
 depression_threshold = (importance_scores * 3).sum()
 
-depressed_label = depression_scores > 50  # [102,]
+depressed_label = depression_scores > depression_threshold  # [102,]
 np.save('survey_data/depressed_label.npy', depressed_label)
