@@ -45,6 +45,8 @@ class LyricDataCollector:
 
     def get_track_info(self, track):
         track_info = self.sp.audio_features(tracks=[track['uri']])[0]
+        if track_info is None:
+            return None
 
         for key, value in track.items():
             if isinstance(value, (dict, list)):
@@ -81,6 +83,8 @@ class LyricDataCollector:
         lyrics_df = []
         for track in recommendations['tracks']:
             track_metadata = self.get_track_info(track)
+            if track_metadata is None:
+                continue
             track_df = self.lyrics_onto_frame(track_metadata, track['artists'][0]['name'])
             lyrics_df.append(track_df)
 
