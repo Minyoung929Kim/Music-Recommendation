@@ -43,8 +43,11 @@ class DataClass:
         ]
         self.continuous_columns = []
         for col in self.df.columns:
-            if col != 'Grade' and int(col[0]) in self.continuous_questions:
-                self.continuous_columns.append(col)
+            if col != 'Grade':
+                for question_number in self.continuous_questions:
+                    if col.startswith(str(question_number)):
+                        self.continuous_columns.append(col)
+                        continue
 
         self.categorical_columns = [
             'Grade',
