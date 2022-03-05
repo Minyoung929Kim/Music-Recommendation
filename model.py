@@ -7,7 +7,7 @@ import pickle
 
 def get_survey_model(hidden_dim=256, out_dim=128):
     """
-    input shape: (102, 56) 
+    input shape: (102, 56)
     first layer (102, 56) @ (56, 256) -> (102, 256)
     second layer (102, 256) @ (256, 256) -> (102, 256)
     third layer (102, 256) @ (256, 256) -> (102, 256)
@@ -32,8 +32,9 @@ def get_survey_model(hidden_dim=256, out_dim=128):
 
 
 def get_text_model():
-    model = TFAutoModel.from_pretrained('distilbert-base-uncased') # [102, 128]
+    model = TFAutoModel.from_pretrained('distilbert-base-uncased')  # [102, 128]
     return model
+
 
 def get_tokenizer():
     tokenizer = AutoTokenizer.from_pretrained('distilbert-base-uncased')
@@ -48,7 +49,8 @@ class MusicRecommendationModel(keras.Model):
         super().__init__()
         self.text_model = get_text_model()
         self.tokenizer = get_tokenizer()
-        self.survey_model = get_survey_model(hidden_dim, self.text_model.config.hidden_size)
+        self.survey_model = get_survey_model(hidden_dim,
+                                             self.text_model.config.hidden_size)
         # what the keras.layers.Dot do:
         # takes two inputs: a, b
         #    a: [N, D]
@@ -72,13 +74,15 @@ class MusicRecommendationModel(keras.Model):
 
         # 2. get the lyric -> put it in text model -> get text vector (embedding)
         lyric_embedding = self.text_model(
-            **{k:v for k,v in inputs.items() if k != 'survey'})
+            **{k: v for k, v in inputs.items() if k != 'survey'})
         lyric_vector = lyric_embedding.last_hidden_state[:, 0, :]  # [102, 128]
 
         # 3. check cosine similarity of survey vector and lyric vector
-        similarity = self.similarity([lyric_vector, survey_vector])  # all the numbers are between -1 ~ 1, shape: [102, 1]
+        similarity = self.similarity(
+            [lyric_vector,
+             survey_vector])  # all the numbers are between -1 ~ 1, shape: [102, 1]
         return similarity
-    
+
     def recommend(self, survey, recommendations=5):
         if self.database is None:
             print('database not initialized yet')
@@ -86,28 +90,30 @@ class MusicRecommendationModel(keras.Model):
         survey_vector = self.survey_model(survey).numpy()  # [1, E]
         metadata = self.database.search(survey_vector, topk=recommendations)
         return metadata
-    
-    def cache_database(self, all_songs): #allsongs is pandaa's datadrame
+
+    def cache_database(self, all_songs):  #allsongs is pandaa's datadrame
         embeddings = []
         metadata = []
-        for i in range(len(all_songs)): #len(all_lyrics) = N
-          song = all_songs.iloc[i]
-          lyrics = song['lyrics']
-          _metadata = song[['uri', 'name']] #song uri, song name
-          tokenized_lyrics = self.tokenizer(lyrics, 
-                                      padding=True, 
-                                      truncation=True,
-                                      max_length=128,  # the number of words in the lyric
-                                      return_tensors='tf')
-          emb = self.text_model(**tokenized_lyrics).last_hidden_state[:, 0, :]
-          embeddings.append(emb.numpy().squeeze()) #tensorflow to numpy and sqeeuze to remove dimensions and leave as a vector
-          metadata.append(_metadata)
-        
-        embeddings = np.stack(embeddings, 0) #[N,768]
+        for i in range(len(all_songs)):  #len(all_lyrics) = N
+            song = all_songs.iloc[i]
+            lyrics = song['lyrics']
+            _metadata = song[['uri', 'name']]  #song uri, song name
+            tokenized_lyrics = self.tokenizer(
+                lyrics,
+                padding=True,
+                truncation=True,
+                max_length=128,  # the number of words in the lyric
+                return_tensors='tf')
+            emb = self.text_model(**tokenized_lyrics).last_hidden_state[:, 0, :]
+            embeddings.append(
+                emb.numpy().squeeze()
+            )  #tensorflow to numpy and sqeeuze to remove dimensions and leave as a vector
+            metadata.append(_metadata)
+
+        embeddings = np.stack(embeddings, 0)  #[N,768]
 
         self.database = Database(metadata, embeddings)
-        self.database.save('database.pkl') # save to file
-
+        self.database.save('database.pkl')  # save to file
 
 
 class Database:
@@ -123,7 +129,7 @@ class Database:
             similarities.append(
                 cosine_similarity(vector.reshape(1, -1), instance.reshape(1, -1)))
 
-        similarities = np.array(similarities)
+        similarities = np.array(similarities).squeeze()
         indices = similarities.argsort()[::-1]  # highest sim to lowest
 
         songs = []
@@ -133,7 +139,7 @@ class Database:
         return songs
 
     def save(self, filename):
-      #in python, there is something called pickle, save virtually anything
-      with open(filename, 'wb') as f:
-        pickle.dump(self, f)
-      #save the database into somewhere
+        #in python, there is something called pickle, save virtually anything
+        with open(filename, 'wb') as f:
+            pickle.dump(self, f)
+        #save the database into somewhere
