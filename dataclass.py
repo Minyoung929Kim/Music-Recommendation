@@ -207,10 +207,13 @@ class DataClass:
         # special (i.e. multiple choice)
         for special_column in self.special_columns:
             encoded_columns[special_column] = self.encode_multiple(
-                special_column, df, data_mappings[column])
-            data_mappings[special_column] = data_mappings[column]
+                special_column, df, data_mappings[special_column])
 
-        return encoded_columns
+        final_data = np.concatenate(list(encoded_columns.values()) +
+                                    [df[self.continuous_columns].values],
+                                    axis=1)
+
+        return final_data
 
 
 # later...

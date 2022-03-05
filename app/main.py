@@ -2,9 +2,10 @@ import os
 import pickle
 import pandas as pd
 import json
+import numpy as np
 from flask import Flask, request
 
-from model import get_survey_model
+from model import get_survey_model, Database
 from dataclass import DataClass
 
 app = Flask(__name__) #opening up app
@@ -29,8 +30,12 @@ survey_model = get_survey_model(128, 768)
 survey_model.load_weights('checkpoints/survey_best')
 
 #3 we need to load the database
-with open('database.pkl', 'rb') as f:
-    database = pickle.load(f)
+with open('metadata.pkl', 'rb') as f:
+    metadata = pickle.load(f)
+
+embeddings = np.load('embeddings.npy')
+
+database = Database(metadata, embeddings)
 
 #preprocessing function
 @app.route(APP_ROOT, methods=["POST"])
