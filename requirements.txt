@@ -1,0 +1,7 @@
+#list all of the packages we use
+tensorflow-cpu
+transofrmers
+gunicorn
+flask
+pandas
+scikit-learn
