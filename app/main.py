@@ -4,13 +4,16 @@ import pandas as pd
 import json
 import numpy as np
 from flask import Flask, request
+from flask_cors import CORS
 
 from model import get_survey_model, Database
 from dataclass import DataClass
 
-app = Flask(__name__) #opening up app
-APP_ROOT = os.getenv('APP_ROOT', '/predict') #https://www, if we have /predict, send our data to the url
+app = Flask(__name__)  #opening up app
+CORS(app)
 
+APP_ROOT = os.getenv(
+    'APP_ROOT', '/predict')  #https://www, if we have /predict, send our data to the url
 
 #preprocess the results into a vector --> preprocessing
 #deep learning model to make it into actual vector --> deep learning model
@@ -37,20 +40,22 @@ embeddings = np.load('embeddings.npy')
 
 database = Database(metadata, embeddings)
 
+
 #preprocessing function
 @app.route(APP_ROOT, methods=["POST"])
 def predict():
-    data = request.json #send data into this link, stored in this file
-    survey = data.get("survey") #format data so get survey
+    data = request.json  #send data into this link, stored in this file
+    survey = data.get("survey")  #format data so get survey
 
     #transform from json -> dict -> pandas dataframe so we can preprocess it using fucntion
     survey_df = pd.DataFrame.from_dict(eval(survey), orient='index').T
-    survey_vector = data_class.process_test_data(survey_df, data_mappings).astype('float32') #required by tensorflow
-    
+    survey_vector = data_class.process_test_data(survey_df, data_mappings).astype(
+        'float32')  #required by tensorflow
+
     survey_vector = survey_model(survey_vector).numpy()
     songs = database.search(survey_vector, topk=5)
     #one detail required, can't just return songs
-    return {"songs": [s.values.tolist() for s in songs]} #pandas dataframe into list
+    return {"songs": [s.values.tolist() for s in songs]}  #pandas dataframe into list
     #this is everything I need to knwo about for prediction code
 
 

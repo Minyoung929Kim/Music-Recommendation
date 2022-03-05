@@ -3,5 +3,6 @@ tensorflow-cpu
 transformers
 gunicorn
 flask
+flask_cors
 pandas
 scikit-learn
