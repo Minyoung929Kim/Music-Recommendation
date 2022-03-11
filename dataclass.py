@@ -94,6 +94,8 @@ class DataClass:
         # using the mapping
         encoded_data = []
         for val in selected_df:
+            if val not in mapping and val == 'Alone': #first checks if val is in mapping, if not, change into homestay
+                val = 'Home Stay'
             encoded_data.append(mapping[val])
 
         # 4. We want to put the enocded values back into the df
