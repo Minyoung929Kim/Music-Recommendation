@@ -29,7 +29,7 @@ with open('survey_data/data_mappings.json', 'r') as f:
 data_class = DataClass('Gathered data.csv')
 
 #2 we need to load the model (not the full mode, but survey model only)
-survey_model = get_survey_model(128, 768)
+survey_model = get_survey_model(1024, 768)
 survey_model.load_weights('checkpoints/survey_best')
 
 #3 we need to load the database
