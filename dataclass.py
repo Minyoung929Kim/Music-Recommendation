@@ -51,7 +51,6 @@ class DataClass:
 
         self.categorical_columns = [
             'Grade',
-            '1) Where do you live during the semester? Please select all.',
             '2) Recently, how many hours did you sleep each day in a week, on average?',
             '8) How long have you been exercising a week?',
             '18) Do you have any ways to release stress? (e.g. meditation)',
@@ -59,6 +58,7 @@ class DataClass:
             '21) Recently, how often do you meet with other people for purposes aside from school?',
         ]
         self.special_columns = [
+            '1) Where do you live during the semester? Please select all.',
             '17) Which of the following is likely to cause you to feel stressed? (tick all that apply)',
         ]
 
