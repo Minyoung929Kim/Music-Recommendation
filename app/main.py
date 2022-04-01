@@ -6,8 +6,9 @@ import numpy as np
 from flask import Flask, request
 from flask_cors import CORS
 
-from model import get_survey_model, Database
-from dataclass import DataClass
+from model.recommendation_model import get_survey_model
+from database.vector_database import Database
+from preprocessing.preprocess_survey.dataclass import DataClass
 
 app = Flask(__name__)  #opening up app
 CORS(app)
